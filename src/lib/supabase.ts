@@ -1,16 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 
-const rawUrl = import.meta.env.VITE_SUPABASE_URL || ''
-const supabaseUrl = rawUrl.replace(/\/rest\/v1\/?$/, '')
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+// Fallback configuration if environment variables are not injected during Vercel build
+const DEFAULT_SUPABASE_URL = 'https://rpcshubvumzlaxqyscln.supabase.co'
+const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_CQTkXCxhOMycWBUjR_-Ifg_8J56PtlD'
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn(
-    'Supabase URL or Anon Key is missing. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file.'
-  )
-}
+const rawUrl = import.meta.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL
+export const supabaseUrl = rawUrl.replace(/\/rest\/v1\/?$/, '')
+export const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY
 
-export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-anon-key'
-)
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey)
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
